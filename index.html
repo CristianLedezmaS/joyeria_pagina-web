@@ -723,10 +723,13 @@
         <div class="bg-white w-full max-w-sm shadow-2xl relative animate-scale-in max-h-[90vh] overflow-y-auto">
             <button onclick="finalizarCompra()" class="absolute top-3 right-3 p-2 text-gray-400 hover:text-brand-dark hover:bg-gray-100 rounded-full transition-colors z-10" aria-label="Cerrar"><i class="fa-solid fa-xmark text-xl"></i></button>
             
-            <div id="voucher-print-area" class="p-8 text-center">
-                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fa-solid fa-check text-green-500 text-3xl"></i></div>
+            <div class="pt-8 px-8 text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-check text-green-500 text-3xl"></i></div>
                 <h2 class="font-display text-3xl font-semibold mb-2">¡Gracias por tu compra!</h2>
-                <p class="text-sm text-gray-500 mb-8">Tu pedido ha sido procesado con éxito</p>
+                <p class="text-sm text-gray-500 mb-6">Tu pedido ha sido procesado con éxito</p>
+            </div>
+
+            <div id="voucher-print-area" class="px-8 pb-8">
                 <div class="bg-gray-50 p-6 rounded-sm text-left mb-6">
                     <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200">
                         <span class="text-brand-500"><i class="fa-solid fa-gem"></i></span>
