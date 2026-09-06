@@ -542,6 +542,8 @@ function handlePaymentMethod() {
 function generateQR() {
     const qrDiv = $('checkout-qrcode');
     qrDiv.innerHTML = '';
+    // Fijar dimensiones explícitas (qrcodejs usa position:absolute y deja el padre con altura 0)
+    qrDiv.style.cssText = 'position:relative;width:160px;height:160px;margin:0 auto;';
     const total = AppState.cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
     const paymentData = `PAGO-ARENAROJA-BS-${total}-${Date.now()}`;
     if (typeof QRCode !== 'undefined') {
