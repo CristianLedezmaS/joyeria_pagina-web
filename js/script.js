@@ -8,11 +8,23 @@
 // CONFIG
 // ============================================
 const CONFIG = {
-    // Reemplazar con tu Client ID real de Google Cloud Console
-    GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
     SHOP_EMAIL: 'ventas@arenaroja.com',
     WHATSAPP: '584121234567',
 };
+
+// ============================================
+// FIREBASE (cuentas reales)
+// ============================================
+const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyD8dMNi_yHBboHTSXN4C78vfbv1MgcSnsw",
+    authDomain: "arena-roja-7f8a0.firebaseapp.com",
+    projectId: "arena-roja-7f8a0",
+    storageBucket: "arena-roja-7f8a0.firebasestorage.app",
+    messagingSenderId: "232537914131",
+    appId: "1:232537914131:web:386f7aefdf0bb8dd6d38e6",
+    measurementId: "G-14Z00JVH7K"
+};
+if (typeof firebase !== 'undefined') firebase.initializeApp(FIREBASE_CONFIG);
 
 // ============================================
 // PRODUCTOS (fuente única de verdad)
@@ -59,10 +71,13 @@ function saveUser() {
     else localStorage.removeItem('arenaroja_user');
 }
 function loadHistory() {
-    try { return JSON.parse(localStorage.getItem('arenaroja_history')) || []; }
+    try { return JSON.parse(localStorage.getItem(historyKey())) || []; }
     catch { return []; }
 }
-function saveHistory(history) { localStorage.setItem('arenaroja_history', JSON.stringify(history)); }
+function saveHistory(history) { localStorage.setItem(historyKey(), JSON.stringify(history)); }
+function historyKey() {
+    return (AppState.user && AppState.user.uid) ? 'arenaroja_history_' + AppState.user.uid : 'arenaroja_history';
+}
 
 // ============================================
 // DOM REFS
@@ -309,8 +324,10 @@ function renderCart() {
 }
 
 // ============================================
-// AUTH - LOGIN GOOGLE REAL (GIS)
+// AUTH - FIREBASE (cuentas reales)
 // ============================================
+let accountMode = 'login'; // 'login' | 'register'
+
 function toggleLoginModal() {
     if (AppState.user) {
         showToast(`Sesión activa: ${AppState.user.email}`, 'info');
@@ -321,48 +338,125 @@ function toggleLoginModal() {
     showModal($('login-modal'));
 }
 
-function handleGoogleLogin() {
+// Alternar entre "Iniciar sesión" y "Registrarse"
+function toggleAccountMode() {
+    accountMode = accountMode === 'login' ? 'register' : 'login';
+    const registering = accountMode === 'register';
+    $('field-nombre-row').classList.toggle('hidden', !registering);
+    $('field-pass2-row').classList.toggle('hidden', !registering);
+    $('login-mode-text').textContent = registering ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?';
+    $('login-toggle-btn').textContent = registering ? 'Inicia sesión' : 'Regístrate';
+    $('login-submit-btn').textContent = registering ? 'Crear Cuenta' : 'Iniciar Sesión';
+    $('login-title').textContent = registering ? 'Crear tu cuenta' : 'Bienvenido';
+    $('login-subtitle').textContent = registering ? 'Regístrate y guarda tu historial de compras' : 'Inicia sesión para finalizar tu compra';
+    $('login-error').classList.add('hidden');
+}
+
+function showLoginError(msg) {
+    const el = $('login-error');
+    el.textContent = msg;
+    el.classList.remove('hidden');
+}
+
+function setLoginLoading(loading) {
+    const btn = $('login-submit-btn');
+    btn.disabled = loading;
+    btn.innerHTML = loading
+        ? '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Procesando...'
+        : (accountMode === 'register' ? 'Crear Cuenta' : 'Iniciar Sesión');
+}
+
+function setGoogleLoading(loading) {
     const btn = $('google-login-btn');
-    if (CONFIG.GOOGLE_CLIENT_ID.includes('YOUR_GOOGLE')) {
-        // Modo demo (sin Client ID configurado)
-        showToast('Configurando Google...', 'info', 1500);
-        setTimeout(() => {
-            completeLogin({
-                name: 'Cliente Google',
-                email: 'cliente.demo@gmail.com',
-                provider: 'google',
-            });
-        }, 800);
-        showToast('⚠️ No configuraste tu Google Client ID. Funciona en modo demo.', 'error', 6000);
-        return;
-    }
-    // Google Identity Services real
-    if (typeof google !== 'undefined' && google.accounts) {
-        google.accounts.id.prompt();
-    } else {
-        showToast('Cargando Google Sign-In, inténtalo de nuevo', 'error');
-    }
+    btn.disabled = loading;
+    btn.innerHTML = loading ? '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Conectando con Google...' : `
+        <svg class="w-5 h-5" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
+        <span class="font-medium text-sm">Continuar con Google</span>`;
 }
 
-// Callback desde GIS
-function handleGoogleCredential(response) {
-    try {
-        const payload = JSON.parse(atob(response.credential.split('.')[1]));
-        completeLogin({ name: payload.name, email: payload.email, provider: 'google', picture: payload.picture || '' });
-    } catch (e) {
-        showToast('Error al iniciar sesión con Google', 'error');
-    }
+function handleGoogleLogin() {
+    if (typeof firebase === 'undefined') { showToast('Firebase no cargó. Revisa tu conexión.', 'error'); return; }
+    setGoogleLoading(true);
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+        .then((res) => {
+            const u = res.user;
+            completeLogin({ uid: u.uid, name: u.displayName || 'Cliente', email: u.email || '', picture: u.photoURL || '', provider: 'google' });
+        })
+        .catch((err) => {
+            setGoogleLoading(false);
+            if (err.code === 'auth/popup-blocked') showToast('El navegador bloqueó la ventana de Google. Permite popups e inténtalo de nuevo.', 'error', 6000);
+            else if (err.code !== 'auth/popup-closed-by-user') showToast(firebaseErrorMsg(err), 'error', 6000);
+        });
 }
 
+// Registrar / Iniciar sesión con correo y contraseña
 function loginConCorreo(event) {
     event.preventDefault();
+    if (typeof firebase === 'undefined') { showToast('Firebase no cargó. Revisa tu conexión.', 'error'); return; }
     const email = $('login-email').value.trim();
-    const name = $('login-nombre').value.trim();
-    if (!email || !name) return;
-    completeLogin({ name, email, provider: 'email' });
+    const pass = $('login-pass').value;
+    const registering = accountMode === 'register';
+    const name = registering ? $('login-nombre').value.trim() : '';
+    $('login-error').classList.add('hidden');
+
+    if (!email || !pass) return;
+    if (registering && !name) { showLoginError('Escribe tu nombre completo'); return; }
+    if (registering && pass.length < 6) { showLoginError('La contraseña debe tener al menos 6 caracteres'); return; }
+    if (registering && pass !== $('login-pass2').value) { showLoginError('Las contraseñas no coinciden'); return; }
+
+    setLoginLoading(true);
+
+    const finish = (fbUser) => completeLogin({
+        uid: fbUser.uid,
+        name: registering && name ? name : (fbUser.displayName || email.split('@')[0]),
+        email: fbUser.email || email,
+        picture: fbUser.photoURL || '',
+        provider: registering ? 'email' : 'email-return',
+    });
+
+    if (registering) {
+        firebase.auth().createUserWithEmailAndPassword(email, pass)
+            .then((res) => {
+                res.user.updateProfile({ displayName: name }).catch(() => {});
+                finish(res.user);
+            })
+            .catch((err) => { setLoginLoading(false); showLoginError(firebaseErrorMsg(err)); });
+    } else {
+        firebase.auth().signInWithEmailAndPassword(email, pass)
+            .then((res) => finish(res.user))
+            .catch((err) => { setLoginLoading(false); showLoginError(firebaseErrorMsg(err)); });
+    }
+}
+
+function resetPassword() {
+    if (typeof firebase === 'undefined') return;
+    const email = $('login-email').value.trim();
+    if (!email) { showLoginError('Escribe tu correo para recuperar la contraseña'); return; }
+    firebase.auth().sendPasswordResetEmail(email)
+        .then(() => showToast('Te enviamos un enlace para restablecer tu contraseña', 'success', 5000))
+        .catch((err) => { showLoginError(firebaseErrorMsg(err)); });
+}
+
+function firebaseErrorMsg(err) {
+    const map = {
+        'auth/email-already-in-use': 'Este correo ya está registrado. Inicia sesión.',
+        'auth/invalid-email': 'El correo no es válido.',
+        'auth/user-not-found': 'No hay cuenta con este correo. Regístrate.',
+        'auth/wrong-password': 'Contraseña incorrecta.',
+        'auth/invalid-credential': 'Correo o contraseña incorrectos.',
+        'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres.',
+        'auth/too-many-requests': 'Demasiados intentos. Espera un momento y vuelve a intentarlo.',
+        'auth/network-request-failed': 'Error de conexión. Revisa tu internet y reintenta.',
+        'auth/popup-blocked': 'Popup bloqueado. Permite ventanas emergentes para Google.',
+        'auth/operation-not-supported-in-this-environment': 'Habilita Google en Firebase: Authentication → Sign-in method.',
+        'auth/configuration-not-found': 'Revisa la configuración de Firebase (projectId).',
+    };
+    return map[err.code] || (err && err.message) || 'Ocurrió un error. Inténtalo de nuevo.';
 }
 
 function completeLogin(user) {
+    if (!user.uid) user.uid = 'user_' + Date.now();
     AppState.user = user;
     saveUser();
     updateUserUI();
@@ -376,6 +470,9 @@ function completeLogin(user) {
 }
 
 function logoutUser() {
+    if (typeof firebase !== 'undefined' && firebase.auth().currentUser) {
+        firebase.auth().signOut().catch(() => {});
+    }
     AppState.user = null;
     saveUser();
     updateUserUI();
@@ -645,7 +742,25 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavbar();
     updateUserUI();
     renderCart();
-});
 
-// Exponer para los onclick inline
-window.handleGoogleCredential = handleGoogleCredential;
+    // Restaurar sesión real desde Firebase
+    if (typeof firebase !== 'undefined') {
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                AppState.user = {
+                    uid: user.uid,
+                    name: user.displayName || (user.email || '').split('@')[0],
+                    email: user.email || '',
+                    picture: user.photoURL || '',
+                    provider: 'firebase',
+                };
+                saveUser();
+                updateUserUI();
+            } else {
+                AppState.user = null;
+                saveUser();
+                updateUserUI();
+            }
+        });
+    }
+});
