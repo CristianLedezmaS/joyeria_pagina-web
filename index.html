@@ -723,13 +723,10 @@
         <div class="bg-white w-full max-w-sm shadow-2xl relative animate-scale-in max-h-[90vh] overflow-y-auto">
             <button onclick="finalizarCompra()" class="absolute top-3 right-3 p-2 text-gray-400 hover:text-brand-dark hover:bg-gray-100 rounded-full transition-colors z-10" aria-label="Cerrar"><i class="fa-solid fa-xmark text-xl"></i></button>
             
-            <div class="pt-8 px-8 text-center">
-                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-check text-green-500 text-3xl"></i></div>
+            <div id="voucher-print-area" class="p-8 text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fa-solid fa-check text-green-500 text-3xl"></i></div>
                 <h2 class="font-display text-3xl font-semibold mb-2">¡Gracias por tu compra!</h2>
-                <p class="text-sm text-gray-500 mb-6">Tu pedido ha sido procesado con éxito</p>
-            </div>
-
-            <div id="voucher-print-area" class="px-8 pb-8">
+                <p class="text-sm text-gray-500 mb-8">Tu pedido ha sido procesado con éxito</p>
                 <div class="bg-gray-50 p-6 rounded-sm text-left mb-6">
                     <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200">
                         <span class="text-brand-500"><i class="fa-solid fa-gem"></i></span>
@@ -757,9 +754,6 @@
             <div class="p-4 bg-gray-50 border-t border-gray-100 space-y-3">
                 <button onclick="downloadVoucherPDF()" class="w-full bg-brand-500 text-white py-3 font-semibold hover:bg-brand-600 transition-all duration-300 flex items-center justify-center gap-2 text-sm">
                     <i class="fa-solid fa-download"></i>Descargar Comprobante (PDF)
-                </button>
-                <button onclick="sendVoucherEmail()" class="w-full border-2 border-brand-dark text-brand-dark py-3 font-semibold hover:bg-brand-dark hover:text-white transition-all duration-300 flex items-center justify-center gap-2 text-sm">
-                    <i class="fa-solid fa-envelope"></i>Enviar por Correo
                 </button>
                 <button onclick="imprimirVoucher()" class="w-full border border-gray-300 text-gray-600 py-3 font-semibold hover:bg-gray-100 transition-all duration-300 flex items-center justify-center gap-2 text-sm">
                     <i class="fa-solid fa-print"></i>Imprimir

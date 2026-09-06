@@ -627,23 +627,6 @@ function downloadVoucherPDF() {
     });
 }
 
-function sendVoucherEmail() {
-    const email = AppState.user ? AppState.user.email : $('v-email').textContent;
-    if (!email) { showToast('No hay correo para envío', 'error'); return; }
-    
-    // Modo simulado (usa localStorage como "bandeja de envío")
-    const outbox = JSON.parse(localStorage.getItem('arenaroja_outbox')) || [];
-    outbox.push({
-        to: email,
-        asunto: `Tu comprobante de compra ${$('v-numero').textContent} - Arena Roja`,
-        fecha: new Date().toISOString(),
-        pedido: $('v-numero').textContent,
-    });
-    localStorage.setItem('arenaroja_outbox', JSON.stringify(outbox));
-    
-    showToast(`Comprobante enviado al correo: ${email}`, 'success', 5000);
-}
-
 function imprimirVoucher() {
     const printContent = $('voucher-print-area').innerHTML;
     const win = window.open('', '_blank', 'width=400,height=600');
