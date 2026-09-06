@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arena Roja</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            light: '#fdfbf7',
+                            dark: '#111111',
+                            gold: '#D4AF37',
+                            'gold-hover': '#B5952F',
+                            red: '#722F37',
+                            gray: '#F3F4F6'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        /* Scrollbar personalizado */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #fdfbf7; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #B5952F; }
+        
+        /* Modales */
+        .no-scroll { overflow: hidden; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="font-sans text-brand-dark bg-brand-light antialiased overflow-x-hidden">
+
+    <!-- Navbar -->
+    <header class="fixed w-full top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-200 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <h1 class="font-serif text-2xl tracking-widest font-bold uppercase">Arena Roja</h1>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="text-sm font-medium hover:text-brand-gold transition-colors">Inicio</a>
+                    <a href="#historia" class="text-sm font-medium hover:text-brand-gold transition-colors">Historia</a>
+                    <a href="#productos" class="text-sm font-medium hover:text-brand-gold transition-colors">Colección</a>
+                </nav>
+                <div class="flex items-center">
+                    <button onclick="toggleCart()" class="relative p-2 text-brand-dark hover:text-brand-gold transition-colors">
+                        <i class="fa-solid fa-bag-shopping text-xl"></i>
+                        <span id="cart-badge" class="absolute top-0 right-0 bg-brand-red text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="relative pt-20 h-screen min-h-[600px] flex items-center justify-center">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Joyas" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/30"></div>
+        </div>
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto text-white">
+            <h2 class="font-serif text-5xl md:text-7xl font-bold mb-6 drop-shadow-lg">Joyas en Barcelona</h2>
+            <p class="text-lg md:text-xl font-light mb-10 max-w-2xl mx-auto drop-shadow-md">Piezas exclusivas bañadas en oro.</p>
+            <a href="#productos" class="inline-block bg-white text-brand-dark font-medium uppercase text-sm px-8 py-4 hover:bg-brand-gold hover:text-white transition-all">Colección</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="historia" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="font-serif text-4xl mb-6">Nuestra Esencia</h2>
+            <div class="w-16 h-1 bg-brand-gold mx-auto mb-6"></div>
+            <p class="text-gray-600 max-w-3xl mx-auto mb-16">Diseñamos piezas combinando tendencias con elegancia atemporal.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="p-6 bg-brand-light rounded-sm">
+                    <div class="text-brand-gold text-4xl mb-4"><i class="fa-solid fa-droplet"></i></div>
+                    <h3 class="font-serif text-xl mb-3 font-semibold">Resistentes al Agua</h3>
+                    <p class="text-sm text-gray-600">Úsalas en la ducha o el mar.</p>
+                </div>
+                <div class="p-6 bg-brand-light rounded-sm">
+                    <div class="text-brand-gold text-4xl mb-4"><i class="fa-solid fa-gem"></i></div>
+                    <h3 class="font-serif text-xl mb-3 font-semibold">Calidad Premium</h3>
+                    <p class="text-sm text-gray-600">Acero y oro 18k.</p>
+                </div>
+                <div class="p-6 bg-brand-light rounded-sm">
+                    <div class="text-brand-gold text-4xl mb-4"><i class="fa-solid fa-pen-nib"></i></div>
+                    <h3 class="font-serif text-xl mb-3 font-semibold">Diseño Exclusivo</h3>
+                    <p class="text-sm text-gray-600">Diseñadas desde cero.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products -->
+    <section id="productos" class="py-24 bg-brand-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="font-serif text-4xl mb-12">Colección Actual</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <div class="group">
+                    <div class="relative overflow-hidden aspect-[4/5] mb-4 bg-gray-100">
+                        <img src="https://images.unsplash.com/photo-1605100804763-247f6612d540?auto=format&fit=crop&w=600&q=80" class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-center">
+                            <button onclick="addToCart('Anillo de Sello', 350, 'https://images.unsplash.com/photo-1605100804763-247f6612d540?auto=format&fit=crop&w=150&q=80')" class="w-full bg-white/90 py-3 text-sm font-semibold uppercase hover:bg-brand-dark hover:text-white">Añadir al carrito</button>
+                        </div>
+                    </div>
+                    <h3 class="font-serif text-lg">Anillo de Sello Imperial</h3>
+                    <p class="text-brand-gold font-medium mt-1">Bs. 350</p>
+                </div>
+
+                <div class="group">
+                    <div class="relative overflow-hidden aspect-[4/5] mb-4 bg-gray-100">
+                        <img src="https://images.unsplash.com/photo-1599643478524-fb66f70d00f6?auto=format&fit=crop&w=600&q=80" class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-center">
+                            <button onclick="addToCart('Collar Eslabones', 420, 'https://images.unsplash.com/photo-1599643478524-fb66f70d00f6?auto=format&fit=crop&w=150&q=80')" class="w-full bg-white/90 py-3 text-sm font-semibold uppercase hover:bg-brand-dark hover:text-white">Añadir al carrito</button>
+                        </div>
+                    </div>
+                    <h3 class="font-serif text-lg">Collar Eslabones</h3>
+                    <p class="text-brand-gold font-medium mt-1">Bs. 420</p>
+                </div>
+
+                <div class="group">
+                    <div class="relative overflow-hidden aspect-[4/5] mb-4 bg-gray-100">
+                        <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=600&q=80" class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex justify-center">
+                            <button onclick="addToCart('Pendientes Aro', 280, 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=150&q=80')" class="w-full bg-white/90 py-3 text-sm font-semibold uppercase hover:bg-brand-dark hover:text-white">Añadir al carrito</button>
+                        </div>
+                    </div>
+                    <h3 class="font-serif text-lg">Pendientes Aro Classic</h3>
+                    <p class="text-brand-gold font-medium mt-1">Bs. 280</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Overlays -->
+    <div id="backdrop" class="fixed inset-0 bg-black/60 z-40 hidden" onclick="closeAllOverlays()"></div>
+
+    <!-- Sidebar -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="flex justify-between items-center p-6 border-b border-gray-100">
+            <h2 class="font-serif text-2xl">Carrito</h2>
+            <button onclick="toggleCart()" class="text-2xl">&times;</button>
+        </div>
+        <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-6">
+            <div class="text-center text-gray-500 mt-10" id="empty-cart-msg"><p>Carrito vacío.</p></div>
+        </div>
+        <div class="p-6 border-t bg-gray-50">
+            <div class="flex justify-between mb-6 font-bold text-xl">
+                <span>Total</span><span id="cart-total">Bs. 0</span>
+            </div>
+            <button onclick="iniciarCheckout()" class="w-full bg-brand-dark text-white py-4 font-semibold uppercase hover:bg-brand-gold" id="btn-checkout" disabled>Tramitar Pedido</button>
+        </div>
+    </div>
+
+    <!-- Login -->
+    <div id="login-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center">
+        <div class="bg-white max-w-md w-full p-8 shadow-2xl relative animate-fade-in">
+            <button onclick="closeAllOverlays()" class="absolute top-4 right-4 text-2xl">&times;</button>
+            <h2 class="font-serif text-3xl font-bold mb-6 text-center">Bienvenido</h2>
+            <button onclick="loginExitoso('google')" class="w-full flex justify-center gap-3 border py-3 mb-6 hover:bg-gray-50">Continuar con Google</button>
+            <button onclick="loginExitoso('email')" class="w-full bg-brand-dark text-white py-3 hover:bg-brand-gold">Iniciar Sesión</button>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 hidden overflow-y-auto py-10 px-4">
+        <div class="relative bg-white max-w-3xl w-full mx-auto shadow-2xl animate-fade-in flex flex-col md:flex-row">
+            <button onclick="closeAllOverlays()" class="absolute top-4 right-4 text-2xl z-10">&times;</button>
+            <div class="w-full md:w-2/3 p-8 border-r">
+                <h2 class="font-serif text-2xl mb-6">Detalles de Pago</h2>
+                <form id="checkout-form">
+                    <input type="text" id="c-nombre" placeholder="Nombre completo" required class="w-full p-2 border mb-4">
+                    <input type="text" id="c-ci" placeholder="CI" required class="w-full p-2 border mb-4">
+                    <select id="c-entrega" required class="w-full p-2 border mb-4">
+                        <option value="">Entrega...</option>
+                        <option value="Tienda">Tienda</option>
+                        <option value="Domicilio">Domicilio</option>
+                    </select>
+                    <select id="c-pago" required onchange="handlePaymentMethod()" class="w-full p-2 border mb-4">
+                        <option value="">Método de Pago...</option>
+                        <option value="QR">QR</option>
+                        <option value="Efectivo">Efectivo</option>
+                    </select>
+                    <div id="checkout-qr-container" class="hidden text-center mb-4">
+                        <div id="checkout-qrcode" class="flex justify-center mb-2"></div>
+                        <p class="text-sm">Escanea para pagar</p>
+                    </div>
+                    <button type="submit" class="w-full bg-brand-dark text-white py-4 font-bold uppercase">Confirmar y Pagar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voucher -->
+    <div id="voucher-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-gray-900/80">
+        <div class="bg-white w-full max-w-sm p-8 text-center relative">
+            <button onclick="location.reload()" class="absolute top-2 right-4 text-2xl">&times;</button>
+            <div id="voucher-print-area">
+                <h2 class="font-serif text-2xl mb-4">¡Gracias por tu compra!</h2>
+                <hr class="mb-4">
+                <p><strong>Cliente:</strong> <span id="v-nombre"></span></p>
+                <p><strong>Pago:</strong> <span id="v-pago"></span></p>
+                <div class="bg-gray-50 p-3 mt-4 text-left">
+                    <ul id="v-productos-lista" class="list-disc pl-4 text-xs"></ul>
+                </div>
+                <h3 class="font-bold text-lg mt-4">Total: <span id="v-total"></span></h3>
+            </div>
+            <button onclick="window.print(); location.reload();" class="mt-4 w-full border-2 border-brand-dark py-2">Imprimir</button>
+        </div>
+    </div>
+
+    <script>
+        // Lógica embebida
+        let cart = []; let isLoggedIn = false; let qrcode = null;
+        
+        function closeAllOverlays() {
+            document.getElementById('backdrop').classList.add('hidden');
+            document.getElementById('cart-sidebar').classList.add('translate-x-full');
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('checkout-modal').classList.add('hidden');
+            document.getElementById('voucher-modal').classList.add('hidden');
+            document.body.classList.remove('no-scroll');
+        }
+
+        function showBackdrop() {
+            document.getElementById('backdrop').classList.remove('hidden');
+            document.body.classList.add('no-scroll');
+        }
+
+        function toggleCart() {
+            const sb = document.getElementById('cart-sidebar');
+            if (sb.classList.contains('translate-x-full')) {
+                closeAllOverlays(); showBackdrop(); sb.classList.remove('translate-x-full');
+            } else { closeAllOverlays(); }
+        }
+
+        function addToCart(name, price, img) {
+            const ex = cart.find(i => i.name === name);
+            if (ex) ex.qty++; else cart.push({name, price, img, qty:1});
+            renderCart(); toggleCart();
+        }
+
+        function removeFromCart(i) { cart.splice(i, 1); renderCart(); }
+
+        function renderCart() {
+            const c = document.getElementById('cart-items-container');
+            const msg = document.getElementById('empty-cart-msg');
+            const btn = document.getElementById('btn-checkout');
+            c.innerHTML = ''; let total = 0; let count = 0;
+
+            if(cart.length===0) { c.appendChild(msg); msg.style.display='block'; btn.disabled=true; }
+            else {
+                msg.style.display='none'; btn.disabled=false;
+                cart.forEach((it, i) => {
+                    total += it.price*it.qty; count += it.qty;
+                    c.innerHTML += `<div class="flex gap-4 items-center"><img src="${it.img}" class="w-16 h-16"><div class="flex-1"><p class="text-sm font-bold">${it.name}</p><p>Bs. ${it.price} (x${it.qty})</p></div><button onclick="removeFromCart(${i})">X</button></div>`;
+                });
+            }
+            document.getElementById('cart-total').innerText = `Bs. ${total}`;
+            const badge = document.getElementById('cart-badge');
+            if(count>0) { badge.innerText=count; badge.classList.remove('hidden'); }
+            else badge.classList.add('hidden');
+        }
+
+        function iniciarCheckout() {
+            closeAllOverlays(); showBackdrop();
+            if(!isLoggedIn) document.getElementById('login-modal').classList.remove('hidden');
+            else document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function loginExitoso(p) {
+            setTimeout(() => { isLoggedIn=true; alert("¡Bienvenido!"); iniciarCheckout(); }, 500);
+        }
+
+        function handlePaymentMethod() {
+            const m = document.getElementById('c-pago').value;
+            const q = document.getElementById('checkout-qr-container');
+            if(m==='QR') {
+                q.classList.remove('hidden');
+                document.getElementById('checkout-qrcode').innerHTML='';
+                const total = cart.reduce((acc, it) => acc + (it.price*it.qty), 0);
+                qrcode = new QRCode(document.getElementById('checkout-qrcode'), {
+                    text: `PAGO-BS-${total}`, width:120, height:120
+                });
+            } else q.classList.add('hidden');
+        }
+
+        document.getElementById('checkout-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const total = cart.reduce((acc, it) => acc + (it.price*it.qty), 0);
+            document.getElementById('v-nombre').innerText = document.getElementById('c-nombre').value;
+            document.getElementById('v-pago').innerText = document.getElementById('c-pago').value;
+            document.getElementById('v-total').innerText = `Bs. ${total}`;
+            const vlist = document.getElementById('v-productos-lista');
+            vlist.innerHTML = '';
+            cart.forEach(it => vlist.innerHTML += `<li>${it.qty}x ${it.name}</li>`);
+            closeAllOverlays(); document.getElementById('voucher-modal').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
